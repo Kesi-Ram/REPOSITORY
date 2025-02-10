@@ -1,0 +1,55 @@
+
+
+class Tao{
+    private String name;
+    private int age;
+    private String section;
+    
+    public String getName(){
+       return name;
+    }
+    public int getAge(){
+        return age;
+    }
+    public String getSec(){
+        return section;
+    }
+    public void setInfo(String newName, String newSec){
+        this.name = newName;
+        this.section = newSec;
+    }
+    public void setAge(int newAge){
+        this.age = newAge;
+    }
+}
+
+
+class Student{
+    private String idNo;
+
+    public void setIdNo(String newIdNo){
+        this.idNo = newIdNo;
+}
+    public String getIdNo(){
+        return idNo;
+        }
+    }
+
+
+public class MainEncapsulation {
+    public static void main(String[] args) {
+       Tao t = new Tao();
+       Student stud = new Student();
+       
+       t.setInfo("kacey", "ICT");
+       t.setAge(18);
+       stud.setIdNo("867235465");
+       
+       System.out.println(" Name: " + t.getName());
+       System.out.println(" Section: " + t.getSec());
+       System.out.println(" Age: " + t.getAge());
+       System.out.println("Student id number is: " + stud.getIdNo());
+    }
+
+}
+
