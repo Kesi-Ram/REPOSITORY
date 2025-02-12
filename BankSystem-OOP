@@ -1,0 +1,86 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.banksystem;
+
+/**
+ *
+ * @author M304User
+ */
+//KACEY ROYCE TYNE SANGBAAN
+//CITCS 1G-B
+
+import java.util.Scanner;
+
+class BankAccount {
+    Scanner sc = new Scanner(System.in);
+    
+    // Attributes
+    private String accountNumber;
+    private double balance;
+
+    // Constructor
+    public BankAccount(String accountNumber, double balance) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+    }
+
+    // Method to display account information
+    public void displayAccountInfo() {
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Current Balance: " + balance);
+    }
+
+    // Methods
+    public void methods() {
+        int userinput;
+        do {
+            System.out.println("1. Enter number (1) to view account balance: ");
+            System.out.println("2. Enter number (2) to deposit funds: ");
+            System.out.println("3. Enter number (3) to withdraw funds: ");
+            System.out.println("Enter number (4) to exit: ");
+            userinput = sc.nextInt();
+
+            switch (userinput) {
+                case 1 -> System.out.println("Balance: " + balance);
+                case 2 -> {
+                    System.out.print("Enter deposit amount: ");
+                    double userFunds = sc.nextDouble();
+                    balance += userFunds; // Update the balance
+                    System.out.println("Deposit successful. Your new balance is: " + balance);
+                }
+                case 3 -> {
+                    System.out.print("Enter withdraw amount: ");
+                    double userWithdraw = sc.nextDouble();
+                    if (userWithdraw > balance) {
+                        System.out.println("Insufficient balance.");
+                    } else {
+                        balance -= userWithdraw; // Update the balance
+                        System.out.println("Withdrawal successful. Your new balance is: " + balance);
+                    }
+                }
+                case 4 -> System.out.println("Thank you for using the bank system.");
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        } while (userinput != 4); // Continue until the user chooses to exit
+    }
+}
+    public class Banksystem{
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        // Create a new bank account
+        BankAccount account = new BankAccount("123456789", 1000);
+
+        // Display account information
+        account.displayAccountInfo();
+
+        // Call deposit and withdraw methods
+        account.methods();
+
+        
+        // Close the scanner
+        sc.close();
+        }
+    }
