@@ -1,0 +1,105 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.sangbaan_cc3;
+
+/**
+ *
+ * @author M304User
+ */
+class Vehicle{
+    void start(){
+        System.out.println("The car is starting");
+    }
+}
+class Car extends Vehicle{
+    void Drive(){
+        System.out.println("The car is driving\n");
+    }
+}
+class modelCar extends Car{
+    void Model(){
+        System.out.println("Car Model: lexus\n");
+    }
+}
+class refNumber extends modelCar{
+    void ref(){
+        System.out.println("Reference number: 63419231\n");
+    }
+}
+class Owner extends refNumber{
+    void owner(){
+        System.out.println("Owner: Brent Kultap\n");
+    }
+} 
+class Registration extends Owner{
+    void regis(){
+        System.out.println("Registration: Liscense\n");
+    }
+}
+class vehicleType extends Registration{
+    void type(){
+        System.out.println("Vehicle Type: Scuderria Ferrari\n");
+    }
+}
+class Fuel extends vehicleType{
+    void fuel(){
+        System.out.println("Fuel Type: Butane\n");
+    }
+}
+
+
+class Animal{  
+void eat(){
+    System.out.println("The animal is eating");
+    }  
+}  
+
+class Mammal extends Animal{  
+void breathe(){
+    System.out.println("The mammal is breathing");
+    }  
+}  
+
+class Dog extends Mammal{  
+void bark(){
+    System.out.println("Dog can bark");
+    }  
+}  
+class Bird extends Dog{  
+void Fly(){
+    System.out.println("The bird can fly");
+    }  
+} 
+class Worm extends Bird{  
+void Crawls(){
+    System.out.println("The worm can crawls");
+    }  
+} 
+class biggerBird extends Worm{  
+void eats(){
+    System.out.println("The worm was eaten by a big bird\n");
+    }  
+} 
+public class MultipleInheritance {
+    public static void main(String[]Args){
+        biggerBird a = new biggerBird();
+        a.breathe();
+        a.bark();
+        a.eat();
+        a.Fly();
+        a.Crawls();
+        a.eats();
+        
+        Fuel c = new Fuel();
+        c.start();
+        c.Drive();
+        c.Model();
+        c.owner();
+        c.ref();
+        c.regis();
+        c.fuel();
+        c.type();
+    }
+}
