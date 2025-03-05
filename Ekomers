@@ -1,124 +1,125 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author M304User
- */
-
 class Product{
-    //attributes
-    protected double price;
-    protected int quantity;
-    protected String name;
+//attributes
+protected double price;
+protected int quantity;
+protected String name;
 
 
-    //constructor
-    public Product(String name, double price, int quantity){
-        this.price = price;
-        this.quantity = quantity;
-        this.name = name;
-    }
-    //methods
-    public void displayProductInfo(){
-        System.out.print(" Quantity: " + quantity );
-        System.out.printf(" Price: $%.2f%n", price);
-    }
+//constructor
+public Product(String name, double price, int quantity){
+this.price = price;
+this.quantity = quantity;
+this.name = name;
+}
+//methods
+public void displayProductInfo(){
+System.out.print(" Product: " + name + ",");
+System.out.printf(" Price: $%.2f", price, ",");
+System.out.print(" Quantity: " + quantity + ",");
+}
 
-    public void totalPrice(){
-        System.out.printf(" Total Price: $%.2f%n", price * quantity);
-    }
+public void totalPrice(){
+System.out.printf(" Total Price: $%.2f%n", price * quantity);
+}
 }
 //electronic child class
 class Electronics extends Product{
-    //attributes
-    private int warranty;
+//attributes
+private int warranty;
 
-    //constructor
-    public Electronics(String name, double price, int quantity, int warranty){
-        super(name, price, quantity);//super makes this child class inherit the constructed attributes in the parent class
-        this.name = name;//newly added attributes are constructed
-        this.warranty = warranty;
-    }
+//constructor
+public Electronics(String name, double price, int quantity, int warranty){
+super(name, price, quantity);//super makes this child class inherit the constructed attributes in the parent class
+this.name = name;//newly added attributes are constructed
+this.warranty = warranty;
+}
 @Override//override method
-    public void totalPrice(){
-        super.totalPrice();
-    }
-    public void warranty(){//unique method
+public void totalPrice(){
+super.totalPrice();
+}
+public void warranty(){//unique method
+System.out.println(" warranty: " + warranty + "months");
+}
+public void ExtendedWarranty(){
+if(quantity > 2){//adds more 6 months when bought 2 or more quantity
+warranty += 6;
+System.out.println(" Warranty extended by 6 months. New Warranty Period: " + warranty + "months");
+}
 
-        System.out.println(" warranty: " + warranty + "months");
-        if(quantity > 2){//adds more 6 months when bought 2 or more quantity
-            warranty += 6;
-            System.out.println(" Warranty extended by 6 months. New Warranty Period: " + warranty + "months");
-        }
-
-    }
+}
 }
 
 class Clothing extends Product{
-    //attributes
-    private char size;
+//attributes
+private char size;
 
-    //constructor
-    public Clothing(String name, double price, int quantity, char size){
-        super(name, price, quantity);
-        this.name = name;
-        this.size = size;
-    }
+//constructor
+public Clothing(String name, double price, int quantity, char size){
+super(name, price, quantity);
+this.name = name;
+this.size = size;
+}
 @Override
-    public void totalPrice(){
-        super.totalPrice();
-    }
+public void totalPrice(){
+super.totalPrice();
+}
 
-    public void TrySize(){
-        System.out.println(" Trying on T-Shirt in size " + size);
-    }
+public void Size(){
+System.out.println(" Size: " + size);
+}
+public void TrySize(){
+System.out.println(" Trying on T-Shirt in size " + size);
+}
 }
 
 class Book extends Product{
-    //attributes
-    private String author;
+//attributes
+private String author;
 
-    //constructor
-    public Book(String name, double price, int quantity, String author){
-        super(name, price, quantity);
-        this.name = name;
-        this.author = author;
-    }
+//constructor
+public Book(String name, double price, int quantity, String author){
+super(name, price, quantity);
+this.name = name;
+this.author = author;
+}
 @Override
-    public void totalPrice(){
-        super.totalPrice();
-    }
-
-    public void Reading(){
-        System.out.println(" Reading a preview of " + name + " by" + author);
-    }
+public void totalPrice(){
+super.totalPrice();
+}
+public void Author(){
+System.out.print(" Author:" + author + "\n");
+}
+public void Reading(){
+System.out.println(" Reading a preview of " + name + " by" + author);
+}
 }
 
 
 public class ECommerce {
-    public static void main(String[] args) {
-        //electronics
-        Electronics p1 = new Electronics("Laptop", 1200, 10, 24);//create the electronic object
-        p1.displayProductInfo();
-        p1.totalPrice();
-        p1.warranty();
-        System.out.println("------------------------------");
-        
-        //CLothing
-        Clothing p2 = new Clothing("T-Shirt", 25, 50, 'L');//object
-        p2.displayProductInfo();
-        p2.totalPrice();
-        p2.TrySize();
-        System.out.println("------------------------------");
-        
-        //Books
-        Book p3 = new Book("1984", 15, 100, " George Orwell");//object  
-        p3.displayProductInfo();
-        p3.totalPrice();
-        p3.Reading();
-        System.out.println("------------------------------");
-    }
+public static void main(String[] args) {
+//electronics
+Electronics p1 = new Electronics("Laptop", 1200, 10, 24);//create the electronic object
+p1.displayProductInfo();
+p1.warranty();
+p1.totalPrice();
+p1.ExtendedWarranty();
+
+System.out.println("------------------------------");
+
+//CLothing
+Clothing p2 = new Clothing("T-Shirt", 25, 50, 'L');//object
+p2.displayProductInfo();
+p2.Size();
+p2.totalPrice();
+p2.TrySize();
+System.out.println("------------------------------");
+
+//Books
+Book p3 = new Book("Winnie the Pooh", 15, 100, " A.A. Milne");//object
+p3.displayProductInfo();
+p3.Author();
+p3.totalPrice();
+p3.Reading();
+System.out.println("------------------------------");
+}
 }
