@@ -1,0 +1,283 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+/**
+ *
+ * @author M304User
+ */
+class Vehicle {
+
+    private String make;
+
+    private String model;
+
+    private int year;
+
+ 
+
+    // Constructor
+
+    public Vehicle(String make, String model, int year) {
+
+        this.make = make;
+
+        this.model = model;
+
+        this.year = year;
+
+    }
+
+ 
+
+    // Getters
+
+    public String getMake() {
+
+        return make;
+
+    }
+
+ 
+
+    public String getModel() {
+
+        return model;
+
+    }
+
+ 
+
+    public int getYear() {
+
+        return year;
+
+    }
+
+ 
+
+    // Methods
+
+    public String start() {
+
+        return make + " " + model + " is starting.";
+
+    }
+
+ 
+
+    public String stop() {
+
+        return make + " " + model + " is stopping.";
+
+    }
+
+ 
+
+    public String displayInfo() {
+
+        return "Vehicle: " + year + " " + make + " " + model;
+
+    }
+
+}
+
+ 
+
+ 
+
+class Car extends Vehicle {
+
+    private int numDoors;
+
+ 
+
+    // Constructor
+
+    public Car(String make, String model, int year, int numDoors) {
+
+        super(make, model, year); // Call the parent class constructor
+
+        this.numDoors = numDoors;
+
+    }
+
+ 
+
+    // Override displayInfo
+
+    @Override
+
+    public String displayInfo() {
+
+        return "Car: " + getYear() + " " + getMake() + " " + getModel() + ", Doors: " + numDoors;
+
+    }
+
+ 
+
+    // Unique method for Car
+
+    public String honk() {
+
+        return "Beep Beep!!";
+
+    }
+
+}
+
+ 
+
+class Motorcycle extends Vehicle {
+
+    private boolean hasSidecar;
+
+ 
+
+    // Constructor
+
+    public Motorcycle(String make, String model, int year, boolean hasSidecar) {
+
+        super(make, model, year); // Call the parent class constructor
+
+        this.hasSidecar = hasSidecar;
+
+    }
+
+ 
+
+    // Override displayInfo
+
+    @Override
+
+    public String displayInfo() {
+
+        String sidecarInfo = hasSidecar ? "_________" : "without sidecar";
+
+        return "Motorcycle: " + getYear() + " " + getMake() + " " + getModel() + ", " + sidecarInfo;
+
+    }
+
+ 
+
+    // Unique method for Motorcycle
+
+    public String wheelie() {
+
+        return "Doing a wheelie!";
+
+    }
+
+}
+
+ 
+
+class Truck extends Vehicle {
+
+    private double payloadCapacity;
+
+ 
+
+    // Constructor
+
+    public Truck(String make, String model, int year, double payloadCapacity) {
+
+        super(make, model, year); // Call the parent class constructor
+
+        this.payloadCapacity = payloadCapacity;
+
+    }
+
+ 
+
+    // Override displayInfo
+
+    @Override
+
+    public String displayInfo() {
+
+        return "Truck: " + getYear() + " " + getMake() + " " + getModel() + ", Payload: " + payloadCapacity + " tons";
+
+    }
+
+ 
+
+    // Unique method for Truck
+
+    public String loadCargo() {
+
+        return "Loading cargo...";
+
+    }
+
+}
+
+ 
+
+ 
+
+public class VehicleManagementSystem {
+
+    public static void main(String[] args) {
+
+        // Create objects
+
+        Vehicle car = new Car("Toyota", "Corolla", 2020, 4);
+
+        Vehicle motorcycle = new Motorcycle("Harley-Davidson", "Sportster", 2019, false);
+
+        Vehicle truck = new Truck("Ford", "F-150", 2021, 2.5);
+
+ 
+
+        // Store objects in an array (polymorphism)
+
+        Vehicle[] vehicles = {car, motorcycle, truck};
+
+ 
+
+        // Iterate through the array and call methods
+
+        for (Vehicle vehicle : vehicles) {
+
+            System.out.println(vehicle.displayInfo()); // Polymorphism: same method, different behavior
+
+            System.out.println(vehicle.start());
+
+            System.out.println(vehicle.stop());
+
+ 
+
+            // Check the type of vehicle and call unique methods
+
+            if (vehicle instanceof Car) {
+
+                Car c = (Car) vehicle; // Downcasting
+
+                System.out.println(c.honk());
+
+            } else if (vehicle instanceof Motorcycle) {
+
+                Motorcycle m = (Motorcycle) vehicle; // Downcasting
+
+                System.out.println(m.wheelie());
+
+            } else if (vehicle instanceof Truck) {
+
+                Truck t = (Truck) vehicle; // Downcasting
+
+                System.out.println(t.loadCargo());
+
+            }
+
+ 
+
+            System.out.println("-".repeat(30));
+
+        }
+
+    }
+
+}
+
