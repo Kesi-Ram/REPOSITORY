@@ -1,0 +1,82 @@
+import javax.swing.JOptionPane;
+
+
+abstract class Payment{
+    protected double amount;
+
+    public Payment(double amount) {
+        this.amount = amount;
+    }
+    public abstract String paymentMethod();
+}
+
+class CreditCardPayment extends Payment{
+    private String cardNumber;
+    public CreditCardPayment(double amount, String cardNumber) {
+        super(amount);
+        this.cardNumber = cardNumber;
+    }
+    @Override
+    public String paymentMethod() {
+        String message = "Credit Card Payment of amount: $" + amount + " with card number: " + cardNumber;
+        System.out.printf(message);
+        return message;
+    }
+
+}
+
+class DebitCardPayment extends Payment{
+    private String cardNumber;
+    public DebitCardPayment(double amount, String cardNumber) {
+        super(amount);
+        this.cardNumber = cardNumber;
+    }
+    @Override
+    public String paymentMethod() {
+        String message = "Credit Card Payment of amount: $" + amount + "  with card number: " + cardNumber;
+        System.out.printf(message);
+        return message;
+    }
+}
+
+class DigitalWallet extends Payment{
+    private String cardNumber;
+    public DigitalWallet(double amount, String cardNumber) {
+        super(amount);
+        this.cardNumber = cardNumber;
+    }
+    @Override
+    public String paymentMethod() {
+        String message = "Credit Card Payment of amount: $" + amount + " with card number: " + cardNumber;
+        System.out.printf(message);
+        return message;
+    }
+}
+
+
+
+public class PaymentProcessor{
+    public static void main(String[] args) {
+        String options[] = {"CreditCard", "DebitCard", "DigitalWallet"};
+        int choice = JOptionPane.showOptionDialog(null, "Choose Payment Method", "Payment", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        double amount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay: "));
+        String cardNumber = "";
+        switch(choice){
+            case 0:
+                cardNumber = JOptionPane.showInputDialog("Enter card number: ");
+                CreditCardPayment ccp = new CreditCardPayment(amount, cardNumber);
+                JOptionPane.showMessageDialog(null, ccp.paymentMethod());
+                break;
+            case 1:
+                cardNumber = JOptionPane.showInputDialog("Enter card number: ");
+                DebitCardPayment dcp = new DebitCardPayment(amount, cardNumber);
+                JOptionPane.showMessageDialog(null, dcp.paymentMethod());
+                break;
+            case 2:
+                cardNumber = JOptionPane.showInputDialog("Enter wallet ID: ");
+                DigitalWallet dw = new DigitalWallet(amount, cardNumber);
+                JOptionPane.showMessageDialog(null, dw.paymentMethod());
+                break;
+        }
+    }
+}
