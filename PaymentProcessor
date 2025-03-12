@@ -3,79 +3,88 @@ import javax.swing.JOptionPane;
 
 abstract class Payment{
     protected double amount;
+    protected String cardNumber;
 
-    public Payment(double amount) {
+    public Payment(double amount, String cardNumber) {
         this.amount = amount;
+        this.cardNumber = cardNumber;
     }
-    public abstract String paymentMethod();
+    public abstract void paymentMethod();
 }
 
 class CreditCardPayment extends Payment{
-    private String cardNumber;
     public CreditCardPayment(double amount, String cardNumber) {
-        super(amount);
-        this.cardNumber = cardNumber;
+        super(amount, cardNumber);
     }
     @Override
-    public String paymentMethod() {
-        String message = "Credit Card Payment of amount: $" + amount + " with card number: " + cardNumber;
-        System.out.printf(message);
-        return message;
+    public void paymentMethod() {
+        JOptionPane.showMessageDialog(null, "Debit Card Payment of amount: $" + amount + "  with card IDnumber: " + cardNumber);
     }
 
 }
 
 class DebitCardPayment extends Payment{
-    private String cardNumber;
     public DebitCardPayment(double amount, String cardNumber) {
-        super(amount);
-        this.cardNumber = cardNumber;
+        super(amount, cardNumber);
     }
     @Override
-    public String paymentMethod() {
-        String message = "Credit Card Payment of amount: $" + amount + "  with card number: " + cardNumber;
-        System.out.printf(message);
-        return message;
+    public void paymentMethod() {
+        JOptionPane.showMessageDialog(null, "Debit Card Payment of amount: $" + amount + "  with card IDnumber: " + cardNumber);
     }
 }
 
 class DigitalWallet extends Payment{
-    private String cardNumber;
     public DigitalWallet(double amount, String cardNumber) {
-        super(amount);
-        this.cardNumber = cardNumber;
+        super(amount, cardNumber);
     }
     @Override
-    public String paymentMethod() {
-        String message = "Credit Card Payment of amount: $" + amount + " with card number: " + cardNumber;
-        System.out.printf(message);
-        return message;
+    public void paymentMethod() {
+        JOptionPane.showMessageDialog(null, "Debit Card Payment of amount: $" + amount + "  with card IDnumber: " + cardNumber);
     }
 }
 
 
-
 public class PaymentProcessor{
     public static void main(String[] args) {
-        String options[] = {"CreditCard", "DebitCard", "DigitalWallet"};
+        String options[] = {"CreditCard", "DebitCard", "DigitalWallet", "Exit"};
+
         int choice = JOptionPane.showOptionDialog(null, "Choose Payment Method", "Payment", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-        double amount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay: "));
+        
         String cardNumber = "";
+
         switch(choice){
             case 0:
+            try {
                 cardNumber = JOptionPane.showInputDialog("Enter card number: ");
+                double amount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay: "));
                 CreditCardPayment ccp = new CreditCardPayment(amount, cardNumber);
-                JOptionPane.showMessageDialog(null, ccp.paymentMethod());
+                ccp.paymentMethod();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Invalid Input");
+            }
                 break;
             case 1:
+            try {
                 cardNumber = JOptionPane.showInputDialog("Enter card number: ");
+                double amount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay: "));
                 DebitCardPayment dcp = new DebitCardPayment(amount, cardNumber);
-                JOptionPane.showMessageDialog(null, dcp.paymentMethod());
+                dcp.paymentMethod();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Invalid Input");
+            }
                 break;
             case 2:
-                cardNumber = JOptionPane.showInputDialog("Enter wallet ID: ");
+            try {
+                cardNumber = JOptionPane.showInputDialog("Enter card number: ");
+                double amount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay: "));
                 DigitalWallet dw = new DigitalWallet(amount, cardNumber);
-                JOptionPane.showMessageDialog(null, dw.paymentMethod());
+                dw.paymentMethod();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Invalid Input");
+            }
+                break;
+            case 3:
+                JOptionPane.showMessageDialog(null, "Exiting");
                 break;
         }
     }
