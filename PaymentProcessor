@@ -1,3 +1,14 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package paymentprocessor;
+
+/**
+ *
+ * @author m307user
+ */
 //KCAEY ROYCE TYNE SANGBAA
 //CITCS 1-G-B   
 //PAYMENT PROCESSOR
@@ -50,35 +61,44 @@ class DigitalWallet extends Payment{
 
 public class PaymentProcessor{
     public static void main(String[] args) {
-        String options[] = {"CreditCard", "DebitCard", "DigitalWallet", "Exit"};//JOptionPane options
 
+            String options[] = {"CreditCard", "DebitCard", "DigitalWallet", "Exit"};//JOptionPane options
+        
         String name = "";
-            name = JOptionPane.showInputDialog("Enter name: ");
+
+             name = JOptionPane.showInputDialog("Enter name: ");
             if (name == null || !name.matches("[a-zA-Z]*")) {//name string validation
                 JOptionPane.showMessageDialog(null, "Invalid Input");
                 System.exit(0);
             }else{
                 JOptionPane.showMessageDialog(null, "Welcome " + name);
             }
+        while(true){
         //choose payment methods
         int choice = JOptionPane.showOptionDialog(null, "Choose Payment Method", "Payment", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         
         String cardNumber = "";
-
-        switch(choice){
+        
+        while(true){
+            cardNumber = JOptionPane.showInputDialog("Enter card number: ");
+            if(!cardNumber.matches("\\d+") || cardNumber == null){
+                JOptionPane.showMessageDialog(null, "invalid output, please try again");
+            }else{
+                break;
+            }
+        }
+         switch(choice){
             case 0:
             try {
-                cardNumber = JOptionPane.showInputDialog("Enter card number: ");//credit card
                 double amount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay: "));
                 CreditCardPayment ccp = new CreditCardPayment(amount, cardNumber, name);//new object
                 ccp.paymentMethod();//call method for displaying infos
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Invalid Input");
+                JOptionPane.showMessageDialog(null, "Invalid Input, please try again");
             }
                 break;
             case 1:
             try {
-                cardNumber = JOptionPane.showInputDialog("Enter card number: ");//debit card
                 double amount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay: "));
                 DebitCardPayment dcp = new DebitCardPayment(amount, cardNumber, name);//new object
                 dcp.paymentMethod();//call method for displaying infos
@@ -88,7 +108,6 @@ public class PaymentProcessor{
                 break;
             case 2:
             try {
-                cardNumber = JOptionPane.showInputDialog("Enter card number: ");//wallet
                 double amount = Double.parseDouble(JOptionPane.showInputDialog("Enter amount to pay: "));
                 DigitalWallet dw = new DigitalWallet(amount, cardNumber, name);//new object
                 dw.paymentMethod();//call method for displaying infos
@@ -99,7 +118,9 @@ public class PaymentProcessor{
             case 3:
                 JOptionPane.showMessageDialog(null, "Exiting");
                 break;
-        }
+            }
+        }   
     }
 }
+    
 
