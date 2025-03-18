@@ -1,0 +1,314 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+class AVLTree {
+
+    static class Node {
+        int key;
+        Node left, right;
+        int height;
+
+        public Node(int key) {
+            this.key = key;
+            left = right = null;
+            height = 1;
+        }
+    }
+
+    Node root;
+
+    public AVLTree() {
+        root = null;
+    }
+
+    private int height(Node node) {
+        return node == null ? 0 : node.height;
+    }
+
+    private int max(int a, int b) {
+        return a > b ? a : b;
+    }
+
+    private Node rightRotate(Node y) {
+        Node x = y.left;
+        Node T2 = x.right;
+        x.right = y;
+        y.left = T2;
+        y.height = max(height(y.left), height(y.right)) + 1;
+        x.height = max(height(x.left), height(x.right)) + 1;
+        return x;
+    }
+
+    private Node leftRotate(Node x) {
+        Node y = x.right;
+        Node T2 = y.left;
+        y.left = x;
+        x.right = T2;
+        x.height = max(height(x.left), height(x.right)) + 1;
+        y.height = max(height(y.left), height(y.right)) + 1;
+        return y;
+    }
+
+    private int getBalance(Node N) {
+        return N == null ? 0 : height(N.left) - height(N.right);
+    }
+
+    public void insert(int key) {
+        root = insertRec(root, key);
+    }
+
+    private Node insertRec(Node node, int key) {
+        if (node == null) {
+            return new Node(key);
+        }
+
+        if (key < node.key) {
+            node.left = insertRec(node.left, key);
+        } else if (key > node.key) {
+            node.right = insertRec(node.right, key);
+        } else {
+            return node;  // Duplicates are not allowed
+        }
+
+        node.height = 1 + max(height(node.left), height(node.right));
+        int balance = getBalance(node);
+
+        if (balance > 1 && key < node.left.key) {
+            return rightRotate(node);
+        }
+
+        if (balance < -1 && key > node.right.key) {
+            return leftRotate(node);
+        }
+
+        if (balance > 1 && key > node.left.key) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        }
+
+        if (balance < -1 && key < node.right.key) {
+            node.right = rightRotate(node.right);
+            return leftRotate(node);
+        }
+
+        return node;
+    }
+
+    public void delete(int key) {
+        root = deleteRec(root, key);
+    }
+
+    private Node deleteRec(Node root, int key) {
+        if (root == null) {
+            return root;
+        }
+
+        if (key < root.key) {
+            root.left = deleteRec(root.left, key);
+        } else if (key > root.key) {
+            root.right = deleteRec(root.right, key);
+        } else {
+            if (root.left == null) {
+                if (root.right != null) {
+                    System.out.println("Delete " + key + ": " + root.right.key + " replaces " + key);
+                } else {
+                    System.out.println("Delete " + key + ": No replacement for " + key + " (leaf node)");
+                }
+                return root.right;
+            } else if (root.right == null) {
+                if (root.left != null) {
+                    System.out.println("Delete " + key + ": " + root.left.key + " replaces " + key);
+                } else {
+                    System.out.println("Delete " + key + ": No replacement for " + key + " (leaf node)");
+                }
+                return root.left;
+            }
+
+            Node temp = minValueNode(root.right);
+            System.out.println("Delete " + key + ": " + temp.key + " replaces " + key);
+            root.key = temp.key;
+            root.right = deleteRec(root.right, temp.key);
+        }
+
+        if (root == null) {
+            return root;
+        }
+
+        root.height = 1 + max(height(root.left), height(root.right));
+        int balance = getBalance(root);
+
+        if (balance > 1 && getBalance(root.left) >= 0) {
+            return rightRotate(root);
+        }
+
+        if (balance > 1 && getBalance(root.left) < 0) {
+            root.left = leftRotate(root.left);
+            return rightRotate(root);
+        }
+
+        if (balance < -1 && getBalance(root.right) <= 0) {
+            return leftRotate(root);
+        }
+
+        if (balance < -1 && getBalance(root.right) > 0) {
+            root.right = rightRotate(root.right);
+            return leftRotate(root);
+        }
+
+        return root;
+    }
+
+    private Node minValueNode(Node node) {
+        Node current = node;
+        while (current.left != null) {
+            current = current.left;
+        }
+        return current;
+    }
+
+    public void preorder() {
+        System.out.print("Preorder: ");
+        preorderRec(root);
+        System.out.println();
+    }
+
+    private void preorderRec(Node root) {
+        if (root != null) {
+            System.out.print(root.key + " ");
+            preorderRec(root.left);
+            preorderRec(root.right);
+        }
+    }
+
+    public void inorder() {
+        System.out.print("Inorder: ");
+        inorderRec(root);
+        System.out.println();
+    }
+
+    private void inorderRec(Node root) {
+        if (root != null) {
+            inorderRec(root.left);
+            System.out.print(root.key + " ");
+            inorderRec(root.right);
+        }
+    }
+
+    public void postorder() {
+        System.out.print("Postorder: ");
+        postorderRec(root);
+        System.out.println();
+    }
+
+    private void postorderRec(Node root) {
+        if (root != null) {
+            postorderRec(root.left);
+            postorderRec(root.right);
+            System.out.print(root.key + " ");
+        }
+    }
+
+    public int[] toArray() {
+        int height = getHeight(root);
+        int size = (int) Math.pow(2, height) - 1;
+        int[] array = new int[size];
+        Arrays.fill(array, 0);
+        toArrayRec(root, array, 0);
+        return array;
+    }
+
+    private int getHeight(Node root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + max(getHeight(root.left), getHeight(root.right));
+    }
+
+    private void toArrayRec(Node root, int[] array, int index) {
+        if (root == null || index >= array.length) {
+            return;
+        }
+        array[index] = root.key;
+        toArrayRec(root.left, array, 2 * index + 1);
+        toArrayRec(root.right, array, 2 * index + 2);
+    }
+
+    public void displayArrayWithIndex(int[] array) {
+        System.out.println("\n1-D Array Representation with Indexes:");
+        System.out.print("Index: ");
+        for (int i = 0; i < array.length; i++) {
+            System.out.print(String.format("%-4d", i));
+        }
+        System.out.println();
+        System.out.print("Array: ");
+        for (int i = 0; i < array.length; i++) {
+            System.out.print(String.format("%-4d", array[i]));
+        }
+        System.out.println();
+    }
+}
+
+public class AVL {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        AVLTree tree = new AVLTree();
+        int choice, key;
+
+        while (true) {
+            System.out.println("\n===== AVL Tree Operations =====");
+            System.out.println("1. Insert multiple elements");
+            System.out.println("2. Delete multiple elements");
+            System.out.println("3. Display Preorder Traversal");
+            System.out.println("4. Display Inorder Traversal");
+            System.out.println("5. Display Postorder Traversal");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter integers to insert (space-separated): ");
+                    scanner.nextLine();  // Consume newline character
+                    String input = scanner.nextLine();
+                    String[] numbers = input.split(" ");
+                    for (String num : numbers) {
+                        tree.insert(Integer.parseInt(num));
+                    }
+                    System.out.println("AVL Tree after insertion:");
+                    tree.preorder();
+                    tree.inorder();
+                    tree.postorder();
+                    break;
+                case 2:
+                    System.out.print("Enter integers to delete (space-separated): ");
+                    scanner.nextLine();  // Consume newline character
+                    String deleteInput = scanner.nextLine();
+                    String[] deleteNumbers = deleteInput.split(" ");
+                    for (String num : deleteNumbers) {
+                        int deleteKey = Integer.parseInt(num);
+                        tree.delete(deleteKey);
+                    }
+                    System.out.println("AVL Tree after deletion:");
+                    tree.preorder();
+                    tree.inorder();
+                    tree.postorder();
+                    break;
+                case 3:
+                    tree.preorder();
+                    break;
+                case 4:
+                    tree.inorder();
+                    break;
+                case 5:
+                    tree.postorder();
+                    break;
+                case 6:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice, please try again.");
+            }
+        }
+    }
+}
