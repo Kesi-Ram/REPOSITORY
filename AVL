@@ -103,62 +103,70 @@ class AVLTree {
             return root;
         }
 
+        // Step 1: Perform standard BST delete operation
         if (key < root.key) {
             root.left = deleteRec(root.left, key);
         } else if (key > root.key) {
             root.right = deleteRec(root.right, key);
         } else {
             // Node to be deleted is found
+
+            // Step 2: Case 1: Node has no child (leaf node)
             if (root.left == null && root.right == null) {
-                // It's a leaf node, just remove it
                 System.out.println("delete" + key + ": " + key + " is removed (leaf)");
                 return null;
-            } else if (root.left == null) {
-                // Node has only right child
+            }
+            
+            // Step 3: Case 2: Node has only one child
+            else if (root.left == null) {
+                // Only right child
                 return root.right;
             } else if (root.right == null) {
-                // Node has only left child
+                // Only left child
                 return root.left;
             }
 
-            // Node with two children: get the inorder successor
+            // Step 4: Node has two children: Get the in-order successor (smallest in the right subtree)
             Node temp = minValueNode(root.right);
 
             // Display the replacement message
             System.out.println("delete" + key + ": " + temp.key + " replaces " + key);
 
-            // Copy the inorder successor's content to this node
+            // Step 5: Copy the inorder successor's content to this node
             root.key = temp.key;
 
-            // Delete the inorder successor
+            // Step 6: Delete the inorder successor
             root.right = deleteRec(root.right, temp.key);
         }
 
-        // If the tree had only one node, return it
+        // Step 7: If the tree had only one node, return it
         if (root == null) {
             return root;
         }
 
-        // Update height of the current node
+        // Step 8: Update the height of the current node
         root.height = 1 + max(height(root.left), height(root.right));
 
-        // Get the balance factor to check whether this node became unbalanced
+        // Step 9: Get the balance factor and balance the tree if necessary
         int balance = getBalance(root);
 
-        // Perform necessary rotations to balance the tree
+        // Left heavy case
         if (balance > 1 && getBalance(root.left) >= 0) {
             return rightRotate(root);
         }
 
+        // Right heavy case
+        if (balance < -1 && getBalance(root.right) <= 0) {
+            return leftRotate(root);
+        }
+
+        // Left-right heavy case
         if (balance > 1 && getBalance(root.left) < 0) {
             root.left = leftRotate(root.left);
             return rightRotate(root);
         }
 
-        if (balance < -1 && getBalance(root.right) <= 0) {
-            return leftRotate(root);
-        }
-
+        // Right-left heavy case
         if (balance < -1 && getBalance(root.right) > 0) {
             root.right = rightRotate(root.right);
             return leftRotate(root);
