@@ -73,19 +73,23 @@ class AVLTree {
         node.height = 1 + max(height(node.left), height(node.right));
         int balance = getBalance(node);
 
+        // Left Left Case
         if (balance > 1 && key < node.left.key) {
             return rightRotate(node);
         }
 
+        // Right Right Case
         if (balance < -1 && key > node.right.key) {
             return leftRotate(node);
         }
 
+        // Left Right Case
         if (balance > 1 && key > node.left.key) {
             node.left = leftRotate(node.left);
             return rightRotate(node);
         }
 
+        // Right Left Case
         if (balance < -1 && key < node.right.key) {
             node.right = rightRotate(node.right);
             return leftRotate(node);
@@ -99,18 +103,18 @@ class AVLTree {
     }
 
     private Node deleteRec(Node root, int key) {
+        // Step 1: Perform standard BST delete operation
         if (root == null) {
-            return root;
+            return root; // Key not found
         }
 
-        // Step 1: Perform standard BST delete operation
+        // Traverse the tree to find the node to delete
         if (key < root.key) {
             root.left = deleteRec(root.left, key);
         } else if (key > root.key) {
             root.right = deleteRec(root.right, key);
         } else {
             // Node to be deleted is found
-
             // Step 2: Case 1: Node has no child (leaf node)
             if (root.left == null && root.right == null) {
                 System.out.println("delete" + key + ": " + key + " is removed (leaf)");
@@ -126,17 +130,17 @@ class AVLTree {
                 return root.left;
             }
 
-            // Step 4: Node has two children: Get the in-order successor (smallest in the right subtree)
-            Node temp = minValueNode(root.right);
+            // Step 4: Node has two children: Get the in-order predecessor (largest in the left subtree)
+            Node temp = maxValueNode(root.left);
 
             // Display the replacement message
             System.out.println("delete" + key + ": " + temp.key + " replaces " + key);
 
-            // Step 5: Copy the inorder successor's content to this node
+            // Step 5: Copy the inorder predecessor's content to this node
             root.key = temp.key;
 
-            // Step 6: Delete the inorder successor
-            root.right = deleteRec(root.right, temp.key);
+            // Step 6: Delete the inorder predecessor
+            root.left = deleteRec(root.left, temp.key);
         }
 
         // Step 7: If the tree had only one node, return it
@@ -175,10 +179,10 @@ class AVLTree {
         return root;
     }
 
-    private Node minValueNode(Node node) {
+    private Node maxValueNode(Node node) {
         Node current = node;
-        while (current.left != null) {
-            current = current.left;
+        while (current.right != null) {
+            current = current.right;
         }
         return current;
     }
