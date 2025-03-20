@@ -108,24 +108,44 @@ class AVLTree {
         } else if (key > root.key) {
             root.right = deleteRec(root.right, key);
         } else {
-            if (root.left == null) {
+            // Node to be deleted is found
+            if (root.left == null && root.right == null) {
+                // It's a leaf node, just remove it
+                System.out.println("delete" + key + ": " + key + " is removed (leaf)");
+                return null;
+            } else if (root.left == null) {
+                // Node has only right child
                 return root.right;
             } else if (root.right == null) {
+                // Node has only left child
                 return root.left;
             }
 
+            // Node with two children: get the inorder successor
             Node temp = minValueNode(root.right);
+
+            // Display the replacement message
+            System.out.println("delete" + key + ": " + temp.key + " replaces " + key);
+
+            // Copy the inorder successor's content to this node
             root.key = temp.key;
+
+            // Delete the inorder successor
             root.right = deleteRec(root.right, temp.key);
         }
 
+        // If the tree had only one node, return it
         if (root == null) {
             return root;
         }
 
+        // Update height of the current node
         root.height = 1 + max(height(root.left), height(root.right));
+
+        // Get the balance factor to check whether this node became unbalanced
         int balance = getBalance(root);
 
+        // Perform necessary rotations to balance the tree
         if (balance > 1 && getBalance(root.left) >= 0) {
             return rightRotate(root);
         }
@@ -242,8 +262,6 @@ class AVLTree {
         // Compute the height of the tree
         int height = (int) (Math.log(numberOfNodes + 1) / Math.log(2));
 
-
-        
         // Calculate the max number of nodes using the formula
         int maxNodes = (int) (Math.pow(2, height) - 1);
         System.out.println(" Max # nodes = 2^" + height + " - 1 = " + maxNodes);
