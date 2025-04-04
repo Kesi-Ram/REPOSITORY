@@ -1,0 +1,149 @@
+package com.mycompany.kruskal;
+import java.util.*;
+
+import java.util.*;
+
+class Edge implements Comparable<Edge> {
+    int source, destination, weight;
+
+    public Edge(int source, int destination, int weight) {
+        this.source = source;
+        this.destination = destination;
+        this.weight = weight;
+    }
+
+    @Override
+    public int compareTo(Edge other) {
+        return this.weight - other.weight;
+    }
+}
+
+public class Kruskal {
+    private int maxNodeNumber; // Highest node number in the graph
+    private List<Edge> allEdges; // List of all edges in the graph
+    private int[][] adjacencyMatrix; // Adjacency matrix representation
+
+    public Kruskal(int maxNodeNumber) {
+        this.maxNodeNumber = maxNodeNumber;
+        this.allEdges = new ArrayList<>();
+        this.adjacencyMatrix = new int[maxNodeNumber + 1][maxNodeNumber + 1];
+        for (int[] row : adjacencyMatrix) {
+            Arrays.fill(row, 0);
+        }
+    }
+
+    public void addEdge(int source, int destination, int weight) {
+        if (source > maxNodeNumber || destination > maxNodeNumber || source < 0 || destination < 0) {
+            System.out.println("Invalid node number! Must be between 0 and " + maxNodeNumber);
+            return;
+        }
+        allEdges.add(new Edge(source, destination, weight));
+        adjacencyMatrix[source][destination] = weight;
+        adjacencyMatrix[destination][source] = weight;
+    }
+
+    private int findParent(int[] parentNodes, int node) {
+        if (parentNodes[node] != node) {
+            parentNodes[node] = findParent(parentNodes, parentNodes[node]);
+        }
+        return parentNodes[node];
+    }
+
+    private void unionSets(int[] parentNodes, int[] ranks, int set1, int set2) {
+        int root1 = findParent(parentNodes, set1);
+        int root2 = findParent(parentNodes, set2);
+
+        if (ranks[root1] < ranks[root2]) {
+            parentNodes[root1] = root2;
+        } else if (ranks[root1] > ranks[root2]) {
+            parentNodes[root2] = root1;
+        } else {
+            parentNodes[root2] = root1;
+            ranks[root1]++;
+        }
+    }
+
+    public List<Edge> findMinimumSpanningTree() {
+        List<Edge> minimumSpanningTree = new ArrayList<>();
+        Collections.sort(allEdges);
+
+        int[] parentNodes = new int[maxNodeNumber + 1];
+        int[] ranks = new int[maxNodeNumber + 1];
+
+        for (int node = 0; node <= maxNodeNumber; node++) {
+            parentNodes[node] = node;
+            ranks[node] = 0;
+        }
+
+        int edgesAdded = 0;
+        for (Edge edge : allEdges) {
+            if (edgesAdded == maxNodeNumber) break; // MST has nodes-1 edges
+
+            int root1 = findParent(parentNodes, edge.source);
+            int root2 = findParent(parentNodes, edge.destination);
+
+            if (root1 != root2) {
+                minimumSpanningTree.add(edge);
+                unionSets(parentNodes, ranks, root1, root2);
+                edgesAdded++;
+            }
+        }
+
+        return minimumSpanningTree;
+    }
+
+    public void printAdjacencyMatrix() {
+        System.out.println("\nAdjacency Matrix:");
+        System.out.print("   ");
+        for (int i = 0; i <= maxNodeNumber; i++) {
+            System.out.printf("%3d", i);
+        }
+        System.out.println();
+
+        for (int i = 0; i <= maxNodeNumber; i++) {
+            System.out.printf("%3d", i);
+            for (int j = 0; j <= maxNodeNumber; j++) {
+                System.out.printf("%3d", adjacencyMatrix[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean continueRunning = true;
+
+        while (continueRunning) {
+            System.out.print("Enter highest node number in the graph: ");
+            int maxNode = scanner.nextInt();
+
+            Kruskal graph = new Kruskal(maxNode);
+
+            System.out.println("Enter edges (source destination weight), -1 to stop:");
+            while (true) {
+                System.out.print("Edge: ");
+                int source = scanner.nextInt();
+                if (source == -1) break;
+                int destination = scanner.nextInt();
+                int weight = scanner.nextInt();
+                graph.addEdge(source, destination, weight);
+            }
+
+            graph.printAdjacencyMatrix();
+
+            List<Edge> mst = graph.findMinimumSpanningTree();
+            int totalCost = 0;
+
+            System.out.println("\nMinimum Spanning Tree Edges:");
+            for (Edge edge : mst) {
+                System.out.printf("%d - %d : %d\n", edge.source, edge.destination, edge.weight);
+                totalCost += edge.weight;
+            }
+            System.out.println("Total Minimum Cost: " + totalCost);
+
+            System.out.print("\nTry again? (1=Yes, 0=No): ");
+            continueRunning = scanner.nextInt() == 1;
+        }
+        scanner.close();
+    }
+}
