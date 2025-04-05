@@ -1,9 +1,10 @@
 import java.util.*;
 
 class Edge implements Comparable<Edge> {
-    int source, destination, weight;
+    String source, destination;
+    int weight;
 
-    public Edge(int source, int destination, int weight) {
+    public Edge(String source, String destination, int weight) {
         this.source = source;
         this.destination = destination;
         this.weight = weight;
@@ -16,20 +17,27 @@ class Edge implements Comparable<Edge> {
 }
 
 public class Kruskal {
-    private int maxNodeNumber; // Highest node number in the graph
+    private Map<String, Integer> vertexMap; // Map to associate vertex names with indices
     private List<Edge> allEdges; // List of all edges in the graph
     private int[][] adjacencyMatrix; // Adjacency matrix representation
+    private int maxNodeNumber; // Highest node number in the graph
 
     public Kruskal() {
-        this.maxNodeNumber = 0;
+        this.vertexMap = new HashMap<>();
         this.allEdges = new ArrayList<>();
         this.adjacencyMatrix = new int[1][1]; // Will be resized as needed
+        this.maxNodeNumber = 0;
     }
 
-    public void addEdge(int source, int destination, int weight) {
-        // Update maxNodeNumber if needed
-        maxNodeNumber = Math.max(maxNodeNumber, Math.max(source, destination));
-        
+    public void addEdge(String source, String destination, int weight) {
+        // Add vertices to the map if they are not already present
+        if (!vertexMap.containsKey(source)) {
+            vertexMap.put(source, maxNodeNumber++);
+        }
+        if (!vertexMap.containsKey(destination)) {
+            vertexMap.put(destination, maxNodeNumber++);
+        }
+
         // Resize adjacency matrix if needed
         if (maxNodeNumber >= adjacencyMatrix.length) {
             int[][] newMatrix = new int[maxNodeNumber + 1][maxNodeNumber + 1];
@@ -39,9 +47,12 @@ public class Kruskal {
             adjacencyMatrix = newMatrix;
         }
 
+        int sourceIndex = vertexMap.get(source);
+        int destinationIndex = vertexMap.get(destination);
+        
         allEdges.add(new Edge(source, destination, weight));
-        adjacencyMatrix[source][destination] = weight;
-        adjacencyMatrix[destination][source] = weight;
+        adjacencyMatrix[sourceIndex][destinationIndex] = weight;
+        adjacencyMatrix[destinationIndex][sourceIndex] = weight;
     }
 
     private int findParent(int[] parentNodes, int node) {
@@ -69,20 +80,20 @@ public class Kruskal {
         List<Edge> minimumSpanningTree = new ArrayList<>();
         Collections.sort(allEdges);
 
-        int[] parentNodes = new int[maxNodeNumber + 1];
-        int[] ranks = new int[maxNodeNumber + 1];
+        int[] parentNodes = new int[maxNodeNumber];
+        int[] ranks = new int[maxNodeNumber];
 
-        for (int node = 0; node <= maxNodeNumber; node++) {
+        for (int node = 0; node < maxNodeNumber; node++) {
             parentNodes[node] = node;
             ranks[node] = 0;
         }
 
         int edgesAdded = 0;
         for (Edge edge : allEdges) {
-            if (edgesAdded == maxNodeNumber) break; // MST has nodes-1 edges
+            if (edgesAdded == maxNodeNumber - 1) break; // MST has nodes-1 edges
 
-            int root1 = findParent(parentNodes, edge.source);
-            int root2 = findParent(parentNodes, edge.destination);
+            int root1 = findParent(parentNodes, vertexMap.get(edge.source));
+            int root2 = findParent(parentNodes, vertexMap.get(edge.destination));
 
             if (root1 != root2) {
                 minimumSpanningTree.add(edge);
@@ -99,23 +110,24 @@ public class Kruskal {
         
         // Print column headers
         System.out.print("    "); // Space for row numbers
-        for (int i = 1; i <= maxNodeNumber; i++) {
-            System.out.printf("%3d ", i);
+        for (String vertex : vertexMap.keySet()) {
+            System.out.printf("%3s ", vertex);
         }
         System.out.println();
         
         // Print separator line
         System.out.print("  _");
-        for (int i = 1; i <= maxNodeNumber; i++) {
+        for (String vertex : vertexMap.keySet()) {
             System.out.print("____");
         }
         System.out.println();
 
         // Print matrix rows
-        for (int i = 1; i <= maxNodeNumber; i++) {
-            System.out.printf("%d | ", i);
-            for (int j = 1; j <= maxNodeNumber; j++) {
-                System.out.printf("%2d  ", adjacencyMatrix[i][j]);
+        for (String vertex : vertexMap.keySet()) {
+            int index = vertexMap.get(vertex);
+            System.out.printf("%s | ", vertex);
+            for (int j = 0; j < maxNodeNumber; j++) {
+                System.out.printf("%2d  ", adjacencyMatrix[index][j]);
             }
             System.out.println();
         }
@@ -126,8 +138,8 @@ public class Kruskal {
         boolean continueRunning = true;
 
         while (continueRunning) {
-            System.out.println("Enter three numbers for each edge: Vertice1 Vertice2 Value");
-            System.out.println("Example: 1 2 5 will be formatted as (1, 2, 5)");
+            System.out.println("Enter three values for each edge: Vertex1 Vertex2 Value");
+            System.out.println("Example: A B 5 will be formatted as (A, B, 5)");
             System.out.println("Enter -1 to stop adding edges");
             
             Kruskal graph = new Kruskal();
@@ -141,15 +153,15 @@ public class Kruskal {
                 String[] parts = input.split("\\s+");
                 
                 if (parts.length != 3) {
-                    System.out.println("Invalid format! Please enter three numbers separated by spaces");
+                    System.out.println("Invalid format! Please enter three values separated by spaces");
                     continue;
                 }
                 
                 try {
-                    int source = Integer.parseInt(parts[0]);
-                    int destination = Integer.parseInt(parts[1]);
+                    String source = parts[0];
+                    String destination = parts[1];
                     int weight = Integer.parseInt(parts[2]);
-                    System.out.printf("Formatted as: (%d, %d, %d)\n", source, destination, weight);
+                    System.out.printf("Formatted as: (%s, %s, %d)\n", source, destination, weight);
                     graph.addEdge(source, destination, weight);
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid numbers! Please enter valid integers.");
@@ -168,7 +180,7 @@ public class Kruskal {
 
             System.out.println("\nMinimum Spanning Tree Edges:");
             for (Edge edge : mst) {
-                System.out.printf("(%d, %d, %d)\n", edge.source, edge.destination, edge.weight);
+                System.out.printf("(%s, %s, %d)\n", edge.source, edge.destination, edge.weight);
                 totalCost += edge.weight;
             }
 
